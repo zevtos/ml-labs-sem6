@@ -38,8 +38,24 @@ def load_lr1_id_data_mass_18122012(xlsx_path: str | Path, sheet_name: str = "VU"
     return DatasetBundle(features=data, targets=None, raw=data)
 
 
-def load_lr2_chemical_composition_of_ceramic_samples() -> DatasetBundle:
-    """Load LR-2 dataset from UCI (id=583)."""
+def load_lr2_chemical_composition_of_ceramic_samples(
+    csv_path: str | Path | None = None,
+) -> DatasetBundle:
+    """
+    Load LR-2 dataset: Chemical Composition of Ceramic Samples.
+
+    Prefer local CSV from labs/lr-2/data/ if available, else try UCI (id=583).
+    """
+    local_csv = (
+        Path(csv_path)
+        if csv_path is not None
+        else Path(__file__).resolve().parent.parent / "labs/lr-2/data/Chemical Composion of Ceramic.csv"
+    )
+
+    if local_csv.exists():
+        data = pd.read_csv(local_csv)
+        return DatasetBundle(features=data, targets=None, raw=data)
+
     return _to_bundle(fetch_ucirepo(id=583))
 
 
@@ -60,8 +76,50 @@ def load_lr4_moabb_p300() -> Any:
     return BNCI2014009()
 
 
-def load_lr5_human_activity_recognition_using_smartphones() -> DatasetBundle:
-    """Load LR-5 dataset from UCI (id=240)."""
+def load_lr5_human_activity_recognition_using_smartphones(
+    base_dir: str | Path | None = None,
+) -> DatasetBundle:
+    """
+    Load LR-5 dataset: Human Activity Recognition Using Smartphones.
+
+    Read local extraction from `labs/lr-5/data/har/UCI HAR Dataset`.
+    If not found, fallback to ucimlrepo (id=240).
+    """
+    root = (
+        Path(base_dir)
+        if base_dir is not None
+        else Path(__file__).resolve().parent.parent / "labs/lr-5/data/har/UCI HAR Dataset"
+    )
+
+    x_train = root / "train/X_train.txt"
+    x_test = root / "test/X_test.txt"
+    y_train = root / "train/y_train.txt"
+    y_test = root / "test/y_test.txt"
+
+    if x_train.exists() and x_test.exists() and y_train.exists() and y_test.exists():
+        # load feature names
+        features_df = pd.read_csv(root / "features.txt", sep=r"\s+", header=None, names=["idx", "feature"])
+        raw_names = features_df["feature"].tolist()
+        # make feature names unique to keep pandas happy
+        counts: dict[str, int] = {}
+        col_names: list[str] = []
+        for name in raw_names:
+            if name not in counts:
+                counts[name] = 0
+                col_names.append(name)
+            else:
+                counts[name] += 1
+                col_names.append(f"{name}_{counts[name]}")
+
+        xtr = pd.read_csv(x_train, sep=r"\s+", header=None, names=col_names)
+        xte = pd.read_csv(x_test, sep=r"\s+", header=None, names=col_names)
+        ytr = pd.read_csv(y_train, sep=r"\s+", header=None, names=["activity"])
+        yte = pd.read_csv(y_test, sep=r"\s+", header=None, names=["activity"])
+
+        x = pd.concat([xtr, xte], ignore_index=True)
+        y = pd.concat([ytr, yte], ignore_index=True)
+        return DatasetBundle(features=x, targets=y, raw={"x_train": xtr, "x_test": xte, "y_train": ytr, "y_test": yte})
+
     return _to_bundle(fetch_ucirepo(id=240))
 
 
