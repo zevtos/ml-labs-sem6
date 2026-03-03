@@ -5,8 +5,17 @@ requires-python = ">=3.11,<3.13"
 dependencies = [
     "jupyter>=1.1.1",
     "matplotlib>=3.10.8",
+    "mlcore",
     "numpy>=2.4.2",
     "pandas>=3.0.1",
     "scipy>=1.17.1",
     "ucimlrepo>=0.0.7",
 ]
+
+[tool.uv.workspace]
+members = [
+    "mlcore",
+]
+
+[tool.uv.sources]
+mlcore = { workspace = true, editable = true }

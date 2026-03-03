@@ -14,3 +14,6 @@ __pycache__/
 
 # uv / venv
 .venv/
+
+# packaging artifacts
+*.egg-info/

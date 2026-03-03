@@ -1,0 +1,31 @@
+[project]
+name = "mlcore"
+version = "0.1.0"
+description = "Reusable utilities for ML labs"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "numpy>=2.4.2",
+    "pandas>=3.0.1",
+    "scipy>=1.17.1",
+]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+    "mlcore",
+    "mlcore.base",
+    "mlcore.data",
+    "mlcore.lr1",
+    "mlcore.tabular",
+]
+
+[tool.setuptools.package-dir]
+mlcore = "."
+"mlcore.base" = "base"
+"mlcore.data" = "data"
+"mlcore.lr1" = "lr1"
+"mlcore.tabular" = "tabular"
