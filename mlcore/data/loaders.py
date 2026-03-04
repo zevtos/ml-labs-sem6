@@ -46,42 +46,41 @@ def load_moabb_dataset(dataset_class_name: str = "BNCI2014009"):
     return dataset_class()
 
 
-def load_har_dataset_from_directory(
-    base_dir: str | Path,
-) -> DatasetBundle:
+def load_har_dataset_from_directory(base_dir: str | Path) -> DatasetBundle:
     """Load UCI HAR dataset from extracted directory layout."""
     root = Path(base_dir)
 
-    x_train = root / "train/X_train.txt"
-    x_test = root / "test/X_test.txt"
-    y_train = root / "train/y_train.txt"
-    y_test = root / "test/y_test.txt"
+    paths = {
+        "x_train": root / "train/X_train.txt",
+        "x_test": root / "test/X_test.txt",
+        "y_train": root / "train/y_train.txt",
+        "y_test": root / "test/y_test.txt",
+    }
 
-    if not (x_train.exists() and x_test.exists() and y_train.exists() and y_test.exists()):
+    if not all(p.exists() for p in paths.values()):
         raise FileNotFoundError(f"HAR directory has incomplete structure: {root}")
 
-    features_df = pd.read_csv(root / "features.txt", sep=r"\s+", header=None, names=["idx", "feature"])
-    raw_names = features_df["feature"].tolist()
+    # feature names
+    features = pd.read_csv(root / "features.txt", sep=r"\s+", header=None)[1]
 
-    counts: dict[str, int] = {}
-    col_names: list[str] = []
-    for name in raw_names:
-        if name not in counts:
-            counts[name] = 0
-            col_names.append(name)
-        else:
-            counts[name] += 1
-            col_names.append(f"{name}_{counts[name]}")
+    # make duplicate names unique
+    col_names = pd.Index(features).to_series().groupby(level=0).cumcount()
+    col_names = features + col_names.where(col_names == 0, "_" + col_names.astype(str))
 
-    xtr = pd.read_csv(x_train, sep=r"\s+", header=None, names=col_names)
-    xte = pd.read_csv(x_test, sep=r"\s+", header=None, names=col_names)
-    ytr = pd.read_csv(y_train, sep=r"\s+", header=None, names=["activity"])
-    yte = pd.read_csv(y_test, sep=r"\s+", header=None, names=["activity"])
+    # load data
+    x_train = pd.read_csv(paths["x_train"], sep=r"\s+", header=None, names=col_names)
+    x_test = pd.read_csv(paths["x_test"], sep=r"\s+", header=None, names=col_names)
+    y_train = pd.read_csv(paths["y_train"], sep=r"\s+", header=None, names=["activity"])
+    y_test = pd.read_csv(paths["y_test"], sep=r"\s+", header=None, names=["activity"])
 
-    x = pd.concat([xtr, xte], ignore_index=True)
-    y = pd.concat([ytr, yte], ignore_index=True)
-    raw = {"x_train": xtr, "x_test": xte, "y_train": ytr, "y_test": yte}
-    return DatasetBundle(features=x, targets=y, raw=raw)
+    X = pd.concat([x_train, x_test], ignore_index=True)
+    y = pd.concat([y_train, y_test], ignore_index=True)
+
+    return DatasetBundle(
+        features=X,
+        targets=y,
+        raw={"x_train": x_train, "x_test": x_test, "y_train": y_train, "y_test": y_test},
+    )
 
 
 def load_train_target_test_csv(

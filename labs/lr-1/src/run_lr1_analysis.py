@@ -1,7 +1,5 @@
 """CLI runner for Lab 1 analysis using reusable mlcore modules."""
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
 
