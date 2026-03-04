@@ -7,6 +7,7 @@ from typing import Any
 
 import pandas as pd
 from ucimlrepo import fetch_ucirepo
+from moabb import datasets
 
 from mlcore.base.types import DatasetBundle
 from mlcore.base.validation import ensure_optional_dataframe
@@ -36,17 +37,12 @@ def load_csv_file(csv_path: str | Path, **read_csv_kwargs: Any) -> DatasetBundle
     return DatasetBundle(features=data, targets=None, raw=data)
 
 
-def load_moabb_dataset(dataset_class_name: str = "BNCI2014009") -> Any:
+def load_moabb_dataset(dataset_class_name: str = "BNCI2014009"):
     """Instantiate MOABB dataset by class name."""
-    try:
-        import moabb.datasets as moabb_datasets
-    except ImportError as exc:
-        raise ImportError(
-            "moabb is not installed. Install it to use moabb dataset imports: pip install moabb"
-        ) from exc
-    if not hasattr(moabb_datasets, dataset_class_name):
+    if not hasattr(datasets, dataset_class_name):
         raise AttributeError(f"moabb.datasets has no class named {dataset_class_name}")
-    dataset_class = getattr(moabb_datasets, dataset_class_name)
+
+    dataset_class = getattr(datasets, dataset_class_name)
     return dataset_class()
 
 
