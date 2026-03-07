@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 from mlcore.validation import ensure_dataframe
-from mlcore.tabular.statistics import quartile_summary
+from mlcore.tabular.analysis import quartile_summary
 
 
 def plot_feature_scores(scores: pd.Series, title: str = "Feature scores") -> plt.Figure:

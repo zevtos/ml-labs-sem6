@@ -1,6 +1,12 @@
 """Reusable utilities for tabular data workflows."""
 
-from mlcore.tabular.feature_scoring import gain_ratio_by_feature, gain_ratio_for_targets
+from mlcore.tabular.analysis import (
+    absolute_correlation_matrix,
+    descriptive_statistics,
+    gain_ratio_by_feature,
+    gain_ratio_for_targets,
+    quartile_summary,
+)
 from mlcore.tabular.plotting import (
     plot_correlation_heatmap,
     plot_feature_scores,
@@ -12,7 +18,6 @@ from mlcore.tabular.preprocessing import (
     exclude_columns,
     normalize_missing_values,
 )
-from mlcore.tabular.statistics import absolute_correlation_matrix, descriptive_statistics, quartile_summary
 from mlcore.tabular.workflow import TabularFeatureReviewArtifacts, run_tabular_feature_review
 
 __all__ = [
