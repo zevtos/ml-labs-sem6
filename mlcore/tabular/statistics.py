@@ -6,7 +6,7 @@ from collections.abc import Sequence
 
 import pandas as pd
 
-from mlcore.base.validation import ensure_columns_exist, ensure_dataframe
+from mlcore.validation import ensure_columns_exist, ensure_dataframe
 
 
 def _numeric_view(df: pd.DataFrame, columns: Sequence[str] | None = None) -> pd.DataFrame:

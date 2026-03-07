@@ -7,7 +7,7 @@ from collections.abc import Sequence
 import numpy as np
 import pandas as pd
 
-from mlcore.base.validation import ensure_columns_exist, ensure_dataframe
+from mlcore.validation import ensure_columns_exist, ensure_dataframe
 
 
 def normalize_missing_values(df: pd.DataFrame) -> pd.DataFrame:

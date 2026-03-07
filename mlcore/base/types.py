@@ -1,18 +1,6 @@
-"""Core shared data types."""
+"""Backward-compat shim — import from mlcore.types instead."""
 
-from __future__ import annotations
+from mlcore.types import DatasetBundle
 
-from dataclasses import dataclass
-from typing import Any
-
-import pandas as pd
-
-
-@dataclass(frozen=True)
-class DatasetBundle:
-    """Container for loaded datasets across labs."""
-
-    features: pd.DataFrame | None
-    targets: pd.DataFrame | None
-    raw: Any
+__all__ = ["DatasetBundle"]
 

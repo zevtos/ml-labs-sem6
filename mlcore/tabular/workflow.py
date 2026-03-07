@@ -9,7 +9,7 @@ from typing import Any
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from mlcore.base.validation import ensure_columns_exist, ensure_dataframe
+from mlcore.validation import ensure_columns_exist, ensure_dataframe
 from mlcore.tabular.feature_scoring import gain_ratio_for_targets
 from mlcore.tabular.plotting import plot_correlation_heatmap, plot_feature_scores, save_numeric_distributions
 from mlcore.tabular.preprocessing import drop_rows_where_all_columns_missing, exclude_columns

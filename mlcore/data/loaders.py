@@ -9,8 +9,8 @@ import pandas as pd
 from ucimlrepo import fetch_ucirepo
 from moabb import datasets
 
-from mlcore.base.types import DatasetBundle
-from mlcore.base.validation import ensure_optional_dataframe
+from mlcore.types import DatasetBundle
+from mlcore.validation import ensure_optional_dataframe
 
 
 def _to_bundle(dataset: Any) -> DatasetBundle:
