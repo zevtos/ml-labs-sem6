@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -89,17 +88,4 @@ def run_tabular_feature_review(
         descriptive_stats=stats,
         quartiles=quartiles,
     )
-
-
-def artifacts_to_dict(artifacts: TabularFeatureReviewArtifacts) -> dict[str, Any]:
-    """Convert dataclass artifacts into serializable mapping."""
-    return {
-        "cleaned_df": artifacts.cleaned_df,
-        "feature_names": artifacts.feature_names,
-        "score_by_target": artifacts.score_by_target,
-        "score_mean": artifacts.score_mean,
-        "abs_corr_matrix": artifacts.abs_corr_matrix,
-        "descriptive_stats": artifacts.descriptive_stats,
-        "quartiles": artifacts.quartiles,
-    }
 
