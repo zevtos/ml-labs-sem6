@@ -6,8 +6,6 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from ucimlrepo import fetch_ucirepo
-from moabb import datasets
 
 from mlcore.types import DatasetBundle
 from mlcore.validation import ensure_optional_dataframe
@@ -22,6 +20,8 @@ def _to_bundle(dataset: Any) -> DatasetBundle:
 
 def load_uci_dataset(dataset_id: int) -> DatasetBundle:
     """Load any dataset available via ucimlrepo by dataset id."""
+    from ucimlrepo import fetch_ucirepo
+
     return _to_bundle(fetch_ucirepo(id=dataset_id))
 
 
@@ -39,6 +39,8 @@ def load_csv_file(csv_path: str | Path, **read_csv_kwargs: Any) -> DatasetBundle
 
 def load_moabb_dataset(dataset_class_name: str = "BNCI2014009"):
     """Instantiate MOABB dataset by class name."""
+    from moabb import datasets
+
     if not hasattr(datasets, dataset_class_name):
         raise AttributeError(f"moabb.datasets has no class named {dataset_class_name}")
 
