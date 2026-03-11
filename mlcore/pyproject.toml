@@ -19,6 +19,7 @@ packages = [
     "mlcore",
     "mlcore.base",
     "mlcore.data",
+    "mlcore.preprocessing",
     "mlcore.tabular",
 ]
 
@@ -26,4 +27,5 @@ packages = [
 mlcore = "."
 "mlcore.base" = "base"
 "mlcore.data" = "data"
+"mlcore.preprocessing" = "preprocessing"
 "mlcore.tabular" = "tabular"
