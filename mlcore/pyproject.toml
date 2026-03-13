@@ -22,6 +22,7 @@ packages = [
     "mlcore.metrics",
     "mlcore.preprocessing",
     "mlcore.tabular",
+    "mlcore.trees",
 ]
 
 [tool.setuptools.package-dir]
@@ -31,3 +32,4 @@ mlcore = "."
 "mlcore.metrics" = "metrics"
 "mlcore.preprocessing" = "preprocessing"
 "mlcore.tabular" = "tabular"
+"mlcore.trees" = "trees"
