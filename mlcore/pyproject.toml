@@ -7,7 +7,6 @@ dependencies = [
     "matplotlib>=3.10.8",
     "numpy>=2.4.2",
     "pandas>=3.0.1",
-    "scipy>=1.17.1",
 ]
 
 [build-system]
@@ -17,7 +16,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = [
     "mlcore",
-    "mlcore.base",
     "mlcore.data",
     "mlcore.metrics",
     "mlcore.plotting",
@@ -29,7 +27,6 @@ packages = [
 
 [tool.setuptools.package-dir]
 mlcore = "."
-"mlcore.base" = "base"
 "mlcore.data" = "data"
 "mlcore.metrics" = "metrics"
 "mlcore.plotting" = "plotting"
