@@ -62,12 +62,10 @@ def load_har_dataset_from_directory(base_dir: str | Path) -> DatasetBundle:
     if not all(p.exists() for p in paths.values()):
         raise FileNotFoundError(f"HAR directory has incomplete structure: {root}")
 
-    # feature names
-    features = pd.read_csv(root / "features.txt", sep=r"\s+", header=None)[1]
-
-    # make duplicate names unique
-    col_names = pd.Index(features).to_series().groupby(level=0).cumcount()
-    col_names = features + col_names.where(col_names == 0, "_" + col_names.astype(str))
+    # feature names (with dedup for duplicates like fBodyAcc-bandsEnergy)
+    features_raw = pd.read_csv(root / "features.txt", sep=r"\s+", header=None)[1]
+    counts = features_raw.groupby(features_raw).cumcount()
+    col_names = [f"{name}_{c}" if c > 0 else name for name, c in zip(features_raw, counts)]
 
     # load data
     x_train = pd.read_csv(paths["x_train"], sep=r"\s+", header=None, names=col_names)
