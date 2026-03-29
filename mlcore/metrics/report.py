@@ -40,7 +40,8 @@ def save_confusion_matrix(
     save_path: str | Path,
 ) -> plt.Figure:
     """Compute, plot, save, and return confusion matrix figure."""
-    cm = confusion_matrix(y_true, y_pred)
+    labels = list(range(len(class_names)))
+    cm = confusion_matrix(y_true, y_pred, labels=labels)
     fig = plot_confusion_matrix(cm, class_names=class_names)
     fig.savefig(save_path, dpi=150)
     plt.close(fig)

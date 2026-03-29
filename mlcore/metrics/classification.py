@@ -5,15 +5,26 @@ from __future__ import annotations
 import numpy as np
 
 
-def confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
-    """Compute confusion matrix. Rows = true, columns = predicted."""
+def confusion_matrix(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    labels: np.ndarray | list | None = None,
+) -> np.ndarray:
+    """Compute confusion matrix. Rows = true, columns = predicted.
+
+    *labels*: explicit class list to ensure fixed matrix size.
+    """
     y_true, y_pred = np.asarray(y_true).ravel(), np.asarray(y_pred).ravel()
-    classes = np.unique(np.concatenate([y_true, y_pred]))
+    if labels is not None:
+        classes = np.asarray(labels)
+    else:
+        classes = np.unique(np.concatenate([y_true, y_pred]))
     n = len(classes)
     cls_to_idx = {c: i for i, c in enumerate(classes)}
     cm = np.zeros((n, n), dtype=np.int64)
     for t, p in zip(y_true, y_pred):
-        cm[cls_to_idx[t], cls_to_idx[p]] += 1
+        if t in cls_to_idx and p in cls_to_idx:
+            cm[cls_to_idx[t], cls_to_idx[p]] += 1
     return cm
 
 
