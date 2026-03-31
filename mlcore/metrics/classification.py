@@ -99,13 +99,17 @@ def _aggregate(
     support = cm.sum(axis=1).astype(np.float64)
 
     if average == "micro":
-        tp = np.diag(cm).sum()
-        total = cm.sum()
+        tp = float(np.diag(cm).sum())
+        fp = float(cm.sum(axis=0).sum() - np.diag(cm).sum())
+        fn = float(cm.sum(axis=1).sum() - np.diag(cm).sum())
         if metric == "precision":
-            fp = cm.sum() - np.diag(cm).sum() - (cm.sum(axis=1) - np.diag(cm)).sum()
-            return float(tp / total) if total > 0 else 0.0
-        # For micro average, precision == recall == accuracy
-        return float(tp / total) if total > 0 else 0.0
+            return tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        if metric == "recall":
+            return tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        # f1
+        p = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        return float(2 * p * r / (p + r)) if (p + r) > 0 else 0.0
 
     if average == "weighted":
         total = support.sum()
