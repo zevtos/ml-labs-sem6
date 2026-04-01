@@ -17,3 +17,6 @@ labs/**/data/*
 
 # packaging artifacts
 *.egg-info/
+
+# auto-generated docs
+CODE_ONBOARDING.md
