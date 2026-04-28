@@ -61,7 +61,7 @@ def gain_ratio_by_feature(
         feature_columns = [column for column in validated.columns if column != target_column]
     ensure_columns_exist(validated, feature_columns, df_name="df")
 
-    target = validated[target_column].astype("object").fillna(MISSING_BIN_LABEL)
+    target = _as_discrete(validated[target_column], bins=bins)
     scores: dict[str, float] = {}
 
     for column in feature_columns:
