@@ -3,11 +3,13 @@ name = "ml-labs-sem6"
 version = "0.1.0"
 requires-python = ">=3.11,<3.13"
 dependencies = [
+    "filelock>=3.29.0",
     "jupyter>=1.1.1",
     "matplotlib>=3.10.8",
     "mlcore",
     "moabb>=1.4.3",
     "numpy>=2.4.2",
+    "openpyxl>=3.1.5",
     "pandas>=3.0.1",
     "scipy>=1.17.1",
     "ucimlrepo>=0.0.7",
@@ -20,3 +22,8 @@ members = [
 
 [tool.uv.sources]
 mlcore = { workspace = true, editable = true }
+
+[dependency-groups]
+dev = [
+    "kaggle>=2.1.0",
+]
