@@ -39,9 +39,14 @@ def save_confusion_matrix(
     class_names: list[str],
     save_path: str | Path,
 ) -> plt.Figure:
-    """Compute, plot, save, and return confusion matrix figure."""
-    labels = list(range(len(class_names)))
-    cm = confusion_matrix(y_true, y_pred, labels=labels)
+    """Compute, plot, save, and return confusion matrix figure.
+
+    *class_names* должны идти в том же порядке, что и sorted(unique(y_true)).
+    """
+    y_true_arr = np.asarray(y_true).ravel()
+    y_pred_arr = np.asarray(y_pred).ravel()
+    labels = sorted(np.unique(np.concatenate([y_true_arr, y_pred_arr])).tolist())
+    cm = confusion_matrix(y_true_arr, y_pred_arr, labels=labels)
     fig = plot_confusion_matrix(cm, class_names=class_names)
     fig.savefig(save_path, dpi=150)
     plt.close(fig)
