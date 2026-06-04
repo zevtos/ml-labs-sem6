@@ -20,3 +20,11 @@ labs/**/data/*
 
 # auto-generated docs
 CODE_ONBOARDING.md
+
+# служебные метаданные генератора отчётов
+*.gost-meta.json
+
+# черновики и исходные материалы курса
+/_explain/
+/reports/
+/Материалы Основы ML/
