@@ -18,11 +18,8 @@ labs/**/data/*
 # packaging artifacts
 *.egg-info/
 
-# auto-generated docs
-CODE_ONBOARDING.md
-
-# служебные метаданные генератора отчётов
-*.gost-meta.json
+# временные файлы офисных пакетов
+~$*
 
 # черновики и исходные материалы курса
 /_explain/
