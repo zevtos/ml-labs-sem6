@@ -17,12 +17,15 @@ def roc_curve(
     y_true = np.asarray(y_true).ravel()
     y_scores = np.asarray(y_scores, dtype=np.float64).ravel()
 
-    desc_order = np.argsort(y_scores)[::-1]
+    desc_order = np.argsort(y_scores, kind="mergesort")[::-1]
     y_scores = y_scores[desc_order]
     y_true = y_true[desc_order]
 
-    # Distinct thresholds
-    distinct = np.concatenate([[True], np.diff(y_scores) != 0])
+    # Distinct thresholds: keep the LAST index of each plateau so that all
+    # tied samples are counted together at the boundary. Using the leading
+    # edge here would systematically under-count TP/FP and produce wrong AUC
+    # on score vectors with many ties (e.g. Random Forest vote fractions).
+    distinct = np.concatenate([np.diff(y_scores) != 0, [True]])
     tps = np.cumsum(y_true)[distinct]
     fps = np.cumsum(1 - y_true)[distinct]
     thresholds = y_scores[distinct]

@@ -38,14 +38,19 @@ def save_confusion_matrix(
     y_pred: np.ndarray,
     class_names: list[str],
     save_path: str | Path,
+    labels: list[int] | None = None,
 ) -> plt.Figure:
     """Compute, plot, save, and return confusion matrix figure.
 
-    *class_names* должны идти в том же порядке, что и sorted(unique(y_true)).
+    *class_names* must correspond positionally to *labels*. If *labels* is
+    not provided, defaults to ``list(range(len(class_names)))`` so that the
+    matrix always has the same dimension as *class_names* even when some
+    classes are absent from the test slice.
     """
     y_true_arr = np.asarray(y_true).ravel()
     y_pred_arr = np.asarray(y_pred).ravel()
-    labels = sorted(np.unique(np.concatenate([y_true_arr, y_pred_arr])).tolist())
+    if labels is None:
+        labels = list(range(len(class_names)))
     cm = confusion_matrix(y_true_arr, y_pred_arr, labels=labels)
     fig = plot_confusion_matrix(cm, class_names=class_names)
     fig.savefig(save_path, dpi=150)
@@ -74,18 +79,25 @@ def save_multiclass_roc(
     class_names: list[str],
     save_path: str | Path,
 ) -> dict[str, float]:
-    """Compute per-class OvR ROC, plot, save, and return AUC dict."""
-    classes = sorted(np.unique(y_true))
+    """Compute per-class OvR ROC, plot, save, and return AUC dict.
+
+    Iterates over the full set of class indices (``range(len(class_names))``)
+    rather than ``np.unique(y_true)``, so that the *i*-th probability column
+    is always paired with class *i*. Iterating only over classes present in
+    *y_true* causes off-by-one when a class is absent and silently produces
+    wrong AUCs.
+    """
+    y_true = np.asarray(y_true).ravel()
     fpr_dict: dict[str, np.ndarray] = {}
     tpr_dict: dict[str, np.ndarray] = {}
     auc_dict: dict[str, float] = {}
 
-    for i, cls in enumerate(classes):
+    for cls in range(len(class_names)):
         y_bin = (y_true == cls).astype(int)
-        if y_bin.sum() == 0:
-            continue
-        fpr, tpr, _ = roc_curve(y_bin, y_proba[:, i])
-        name = class_names[i] if i < len(class_names) else str(cls)
+        if y_bin.sum() == 0 or y_bin.sum() == len(y_bin):
+            continue  # AUC undefined when one of the classes is empty
+        fpr, tpr, _ = roc_curve(y_bin, y_proba[:, cls])
+        name = class_names[cls]
         fpr_dict[name] = fpr
         tpr_dict[name] = tpr
         auc_dict[name] = auc_score(fpr, tpr)
